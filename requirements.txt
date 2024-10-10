@@ -1,9 +1,7 @@
 matplotlib
-numpy
 pandas
 pillow
 scipy
-os
 io
 pandas
 requests
