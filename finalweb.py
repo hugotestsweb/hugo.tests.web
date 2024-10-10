@@ -1,4 +1,5 @@
 import streamlit as st
+pip install matplotlib
 import matplotlib.pyplot as plt
 import os
 import io
