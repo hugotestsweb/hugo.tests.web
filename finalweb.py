@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 #FONCTIONS
-ddef fig2img(fig):
+def fig2img(fig):
     lst = list(fig.canvas.get_width_height())
     lst.append(3)
     img=PIL.Image.fromarray(np.fromstring(fig.canvas.tostring_rgb(),dtype=np.uint8).reshape(lst))
