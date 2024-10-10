@@ -3,13 +3,21 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import pandas as pd
 import requests
+import io
 
 #FONCTIONS
 def fig2img(fig):
-    lst = list(fig.canvas.get_width_height())
-    lst.append(3)
-    img=PIL.Image.fromarray(np.fromstring(fig.canvas.tostring_rgb(),dtype=np.uint8).reshape(lst))
+    buf = io.BytesIO()
+    fig.savefig(buf)
+    buf.seek(0)
+    img = Image.open(buf)
     return img
+
+#def fig2img(fig):
+#    lst = list(fig.canvas.get_width_height())
+#    lst.append(3)
+#    img=PIL.Image.fromarray(np.fromstring(fig.canvas.tostring_rgb(),dtype=np.uint8).reshape(lst))
+#    return img
 
 def load_image_from_url(image_url):
     response = requests.get(image_url, stream=True)
