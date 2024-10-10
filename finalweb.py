@@ -1,28 +1,23 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import requests
-import _io
 from PIL import Image
 import pandas as pd
-import numpy as np
-from io import BytesIO
+import requests
 
 #FONCTIONS
-def fig2img(fig):
-    buf = io.BytesIO()
-    fig.savefig(buf)
-    buf.seek(0)
-    img = Image.open(buf)
+ddef fig2img(fig):
+    lst = list(fig.canvas.get_width_height())
+    lst.append(3)
+    img=PIL.Image.fromarray(np.fromstring(fig.canvas.tostring_rgb(),dtype=np.uint8).reshape(lst))
     return img
 
-def load_image_from_url(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Check for HTTP errors
-        image = Image.open(BytesIO(response.content))
+def load_image_from_url(image_url):
+    response = requests.get(image_url, stream=True)
+    if response.status_code == 200:
+        image = Image.open(response.raw)  # No need to save it to disk
         return image
-    except Exception as e:
-        print(f"Error loading image: {e}")
+    else:
+        print(f"Failed to fetch the image. Status code: {response.status_code}")
         return None
 
 def crop_image_borders(img, border_size):
