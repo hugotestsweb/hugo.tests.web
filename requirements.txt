@@ -4,3 +4,4 @@ pillow
 scipy
 pandas
 requests
+io
