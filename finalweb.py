@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import requests
-import io
+import _io
 from PIL import Image
 import pandas as pd
 import numpy as np
