@@ -5,19 +5,12 @@ import pandas as pd
 import requests
 import io
 
-#FONCTIONS
 def fig2img(fig):
     buf = io.BytesIO()
     fig.savefig(buf)
     buf.seek(0)
     img = Image.open(buf)
     return img
-
-#def fig2img(fig):
-#    lst = list(fig.canvas.get_width_height())
-#    lst.append(3)
-#    img=PIL.Image.fromarray(np.fromstring(fig.canvas.tostring_rgb(),dtype=np.uint8).reshape(lst))
-#    return img
 
 def load_image_from_url(image_url):
     response = requests.get(image_url, stream=True)
@@ -42,7 +35,6 @@ def crop_image_borders(img, border_size):
 
 def create_scatter_plot_on_image_PC(img, plot_center, plot_size, point, x_tick_interval, y_tick_interval,
                                  x_tick_start, y_tick_start):
-
     img_width, img_height = img.size
     # Create a figure with the size of the image
     fig, ax = plt.subplots()
@@ -74,18 +66,14 @@ def create_scatter_plot_on_image_PC(img, plot_center, plot_size, point, x_tick_i
     ax.set_axis_off()
     # Overlay the plot on the image
     ax.imshow(img, extent=[0, img_width, 0, img_height], zorder=-1)
-
     fig=plt.gcf()
     img=fig2img(fig)
-
     border_size = 150  # Number of pixels to crop from each side
-
     final = crop_image_borders(img, border_size)
     return final
 
 def create_scatter_plot_on_image_PT(img, plot_center, plot_size, point_P, point_T, x_tick_interval, y_tick_interval,
                                  x_tick_start, y_tick_start):
-
     img_width, img_height = img.size
     fig, ax = plt.subplots()
     fig.set_size_inches(img_width / 100, img_height / 100)
@@ -110,12 +98,9 @@ def create_scatter_plot_on_image_PT(img, plot_center, plot_size, point_P, point_
     ax.grid(False)
     ax.set_axis_off()
     ax.imshow(img, extent=[0, img_width, 0, img_height], zorder=-1)
-
     fig = plt.gcf()
     img = fig2img(fig)
-
     border_size = 150  # Number of pixels to crop from each side
-
     final = crop_image_borders(img, border_size)
     return final
 
@@ -129,93 +114,113 @@ def combine_images_side_by_side(img1, img2):
     combined_image.paste(img2, (img1_width, 0))
     return combined_image
 
-st.header("Courbes de croissance CH - Néonatologie", divider="red")
+st.set_page_config(
+    page_title="Courbes de croissance - CH",
+    page_icon=":teddy_bear:")
 
-A1,A2,A3 = st.columns(3)
-with A1 :
-    df = pd.DataFrame({'first column': ["fille", "garçon"]})
-    sex = st.selectbox("Sexe",df['first column'],key="sex")
-#checkbox_selected_F = st.checkbox("Fille")
-#checkbox_selected_G = st.checkbox("Garçon")
+st.header("Courbes de croissance - CH", divider="rainbow")
+tab1, tab2, tab3 = st.tabs([":baby_bottle: **Néonatologie**", ":pushpin: **Points isolés**", ":chart_with_upwards_trend: **Évolution**"])
 
-B1,B2,B3 = st.columns(3)
-with B1:
-    SA_S = st.text_input("SA (semaines)",key="SA_S")
-with B2:
-    SA_J = st.text_input("/7 (jours)", key="SA_J")
+with tab1:
+    A1,A2,A3 = st.columns(3)
+    with A1 :
+        df = pd.DataFrame({'first column': [" ", "Féminin", "Masculin"]})
+        sex = st.selectbox("Sexe",df['first column'],key="sex")
 
-C1,C2,C3 = st.columns(3)
-with C1:
-    PN = st.text_input("Poids (g)", key="PN")
-with C2:
-    TN = st.text_input("Taille (cm)", key="TN")
-with C3:
-    PC = st.text_input("Périmètre crânien (cm)", key="PCN")
+    B1,B2,B3 = st.columns(3)
+    with B1:
+        SA_S = st.text_input("SA (semaines)",key="SA_S")
+    with B2:
+        SA_J = st.text_input("/7 (jours)", key="SA_J")
 
-button_clicked = st.button("Placer sur les courbes")
-if button_clicked:
-    st.write("Voici les valeurs placées sur les courbes de croissance pour un.e ",
-             sex," né.e à ", SA_S, SA_J,"/7 SA avec un poids de naissance de ", PN, "g, une taille de naissance de ", TN,
-             "cm et un périmètre crânien de naissance de ", PC, "cm.")
-    # Example usage
-    image_G_PC_url = 'https://i.ibb.co/yBsc7rs/GNEO-PC.jpg'
-    image_G_PT_url = 'https://i.ibb.co/3yh9KRw/GNEO-PT.jpg'
-    image_F_PC_url = 'https://i.ibb.co/VxZP281/FNEO-PC.jpg'
-    image_F_PT_url = 'https://i.ibb.co/c3cnt5T/FNEO-PT.jpg'
-    image_G_PC = load_image_from_url(image_G_PC_url)
-    image_G_PT = load_image_from_url(image_G_PT_url)
-    image_F_PC = load_image_from_url(image_F_PC_url)
-    image_F_PT = load_image_from_url(image_F_PT_url)
-    plot_center_PC = (177, 172)  # (0,0) in the scatter plot will be at (10,10) in the image
-    plot_center_PT = (177, 150)  # (0,0) in the scatter plot will be at (10,10) in the image
-    plot_size_PC = (948, 1396)  # Scatter plot size (width, height) in pixels
-    plot_size_PT = (948, 1418)  # Scatter plot size (width, height) in pixels
+    C1,C2,C3 = st.columns(3)
+    with C1:
+        PN = st.text_input("Poids (g)", key="PN")
+    with C2:
+        TN = st.text_input("Taille (cm)", key="TN")
+    with C3:
+        PC = st.text_input("Périmètre crânien (cm)", key="PCN")
 
-    # Tick settings PC
-    x_p_PC = int(SA_S)+(int(SA_J)/7)
-    y_p_PC = int(PC)
-    x_tick_interval_PC = 43  # Horizontal axis ticks every 10 pixels
-    y_tick_interval_PC = 58  # Vertical axis ticks every 20 pixels
-    x_tick_start_PC = 20  # Horizontal axis ticks start numbering from 1
-    y_tick_start_PC = 16  # Vertical axis ticks start numbering from 43
-    x_point_PC = (x_p_PC - x_tick_start_PC)
-    y_point_PC = y_p_PC - y_tick_start_PC
-    point_PC = (x_point_PC * x_tick_interval_PC, y_point_PC * y_tick_interval_PC)
+    st.text("")
+    button_clicked = st.button("Placer sur les courbes",key="bouton1")
 
-    # Tick settings PT
-    x_p_P = int(SA_S)+(int(SA_J)/7)
-    y_p_P = int(PN) / 1000 - 1
-    x_p_T = int(SA_S)+(int(SA_J)/7)
-    y_p_T = int(TN) / 10
-    x_tick_interval_PT = 43  # Horizontal axis ticks every 10 pixels
-    y_tick_interval_PT = 202  # Vertical axis ticks every 20 pixels
-    x_tick_start_PT = 20  # Horizontal axis ticks start numbering from 1
-    y_tick_start_PT = -1  # Vertical axis ticks start numbering from 43
-    x_point_P = x_p_P - x_tick_start_PT
-    y_point_P = y_p_P - y_tick_start_PT
-    point_P = (x_point_P * x_tick_interval_PT, y_point_P * y_tick_interval_PT)
-    x_point_T = x_p_T - x_tick_start_PT
-    y_point_T = y_p_T - y_tick_start_PT
-    point_T = (x_point_T * x_tick_interval_PT, y_point_T * y_tick_interval_PT)
-
-    if sex == "garçon":
-        result1 = create_scatter_plot_on_image_PT(image_G_PT, plot_center_PT, plot_size_PT, point_P, point_T,
-                                        x_tick_interval_PT,
-                                        y_tick_interval_PT, x_tick_start_PT, y_tick_start_PT)
-        result2 = create_scatter_plot_on_image_PC(image_G_PC, plot_center_PC, plot_size_PC, point_PC, x_tick_interval_PC,
-                                        y_tick_interval_PC, x_tick_start_PC, y_tick_start_PC)
-
-        img_final = combine_images_side_by_side(result1, result2)
-        st.image(img_final)
+    if sex == "Féminin":
+        sex_text = "fille"
     else:
-        result1 = create_scatter_plot_on_image_PT(image_G_PT, plot_center_PT, plot_size_PT, point_P, point_T,
-                                        x_tick_interval_PT,
-                                        y_tick_interval_PT, x_tick_start_PT, y_tick_start_PT)
-        result2 = create_scatter_plot_on_image_PC(image_F_PC, plot_center_PC, plot_size_PC, point_PC, x_tick_interval_PC,
-                                        y_tick_interval_PC, x_tick_start_PC, y_tick_start_PC)
-        img_final = combine_images_side_by_side(result1, result2)
-        st.image(img_final)
+        sex_text = "garçon"
+
+    if button_clicked:
+        if sex == " " or SA_J == "" or SA_S == "" or PN == "" or TN == "" or PC == "":
+            st.markdown(":red-background[*Les valeurs ne sont pas toutes indiquées.*]")
+        else:
+            st.write("Voici les valeurs placées sur les courbes de croissance pour un.e ",
+                     sex_text," né.e à ", SA_S, SA_J,"/7 SA avec un poids de naissance de ", PN, "g, une taille de naissance de ", TN,
+                     "cm et un périmètre crânien de naissance de ", PC, "cm.")
 
 
-st.markdown("Lien vers [Courbes de croissance](https://cdn.paediatrieschweiz.ch/production/uploads/2020/05/Perzentilen_2012_09_15_SGP_f.pdf) de la Société Suisse de Pédiatrie")
-st.markdown(":blue-background[Hugo]")
+            plot_center_PC = (177, 172)  # (0,0) in the scatter plot will be at (10,10) in the image
+            plot_center_PT = (177, 150)  # (0,0) in the scatter plot will be at (10,10) in the image
+            plot_size_PC = (948, 1396)  # Scatter plot size (width, height) in pixels
+            plot_size_PT = (948, 1418)  # Scatter plot size (width, height) in pixels
+
+            # Tick settings PC
+            x_p_PC = float(SA_S)+(float(SA_J)/7)
+            y_p_PC = float(PC)
+            x_tick_interval_PC = 43  # Horizontal axis ticks every 10 pixels
+            y_tick_interval_PC = 58  # Vertical axis ticks every 20 pixels
+            x_tick_start_PC = 20  # Horizontal axis ticks start numbering from 1
+            y_tick_start_PC = 16  # Vertical axis ticks start numbering from 43
+            x_point_PC = (x_p_PC - x_tick_start_PC)
+            y_point_PC = y_p_PC - y_tick_start_PC
+            point_PC = (x_point_PC * x_tick_interval_PC, y_point_PC * y_tick_interval_PC)
+
+            # Tick settings PT
+            x_p_P = float(SA_S)+(float(SA_J)/7)
+            y_p_P = float(PN) / 1000 - 1
+            x_p_T = float(SA_S)+(float(SA_J)/7)
+            y_p_T = float(TN) / 10
+            x_tick_interval_PT = 43  # Horizontal axis ticks every 10 pixels
+            y_tick_interval_PT = 202  # Vertical axis ticks every 20 pixels
+            x_tick_start_PT = 20  # Horizontal axis ticks start numbering from 1
+            y_tick_start_PT = -1  # Vertical axis ticks start numbering from 43
+            x_point_P = x_p_P - x_tick_start_PT
+            y_point_P = y_p_P - y_tick_start_PT
+            point_P = (x_point_P * x_tick_interval_PT, y_point_P * y_tick_interval_PT)
+            x_point_T = x_p_T - x_tick_start_PT
+            y_point_T = y_p_T - y_tick_start_PT
+            point_T = (x_point_T * x_tick_interval_PT, y_point_T * y_tick_interval_PT)
+
+            if sex == "garçon":
+                image_G_PC = load_image_from_url('https://i.ibb.co/yBsc7rs/GNEO-PC.jpg')
+                image_G_PT = load_image_from_url('https://i.ibb.co/3yh9KRw/GNEO-PT.jpg')
+                result1 = create_scatter_plot_on_image_PT(image_G_PT, plot_center_PT, plot_size_PT, point_P, point_T,
+                                                x_tick_interval_PT,
+                                                y_tick_interval_PT, x_tick_start_PT, y_tick_start_PT)
+                result2 = create_scatter_plot_on_image_PC(image_G_PC, plot_center_PC, plot_size_PC, point_PC, x_tick_interval_PC,
+                                                y_tick_interval_PC, x_tick_start_PC, y_tick_start_PC)
+
+                A1, A2 = st.columns(2)
+                with A1:
+                    st.image(result1)
+                with A2:
+                    st.image(result2)
+                #img_final = combine_images_side_by_side(result1, result2)
+                #st.image(img_final)
+            else:
+                image_F_PC = load_image_from_url('https://i.ibb.co/VxZP281/FNEO-PC.jpg')
+                image_F_PT = load_image_from_url('https://i.ibb.co/c3cnt5T/FNEO-PT.jpg')
+
+                result1 = create_scatter_plot_on_image_PT(image_F_PT, plot_center_PT, plot_size_PT, point_P, point_T,
+                                                x_tick_interval_PT,
+                                                y_tick_interval_PT, x_tick_start_PT, y_tick_start_PT)
+                result2 = create_scatter_plot_on_image_PC(image_F_PC, plot_center_PC, plot_size_PC, point_PC, x_tick_interval_PC,
+                                                y_tick_interval_PC, x_tick_start_PC, y_tick_start_PC)
+                A1, A2 = st.columns(2)
+                with A1:
+                    st.image(result1)
+                with A2:
+                    st.image(result2)
+                #img_final = combine_images_side_by_side(result1, result2)
+                #st.image(img_final)
+
+    st.markdown("Lien vers les [courbes de croissance](https://cdn.paediatrieschweiz.ch/production/uploads/2020/05/Perzentilen_2012_09_15_SGP_f.pdf) de la Société Suisse de Pédiatrie")
