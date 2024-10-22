@@ -436,6 +436,6 @@ if st.sidebar.button("Envoyer"):
         except Exception as e:
             st.error(f"Erreur lors de l’envoi de l’e-mail : {e}")
     else:
-        st.error(f"Merci de compléter tous les champs.", icon="🚨")
+        st.error(f"Merci de compléter tous les champs du formulaire de contact. Si vous souhaitez rester anonyme, vous pouvez rentrer des nom, prénom et adresse e-mail fictifs.", icon="🚨")
         
 st.sidebar.markdown(":rainbow[Développé par Hugo] :teddy_bear:")
