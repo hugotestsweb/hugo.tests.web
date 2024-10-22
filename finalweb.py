@@ -403,7 +403,7 @@ with tab3:
     st.markdown(css, unsafe_allow_html=True)
 
 st.sidebar.markdown("Ce projet a été réalisé avec l'accord de l'organe responsable de la Société Suisse de Pédiatrie. Lien vers les [courbes de croissance](https://cdn.paediatrieschweiz.ch/production/uploads/2020/05/Perzentilen_2012_09_15_SGP_f.pdf) officielles.")
-st.sidebar.markdown("Pour toute demande de contact, proposition d'amélioration ou rapport d'erreur, merci d'écrire à " + '<a href="mailto:croissancech@gmail.com">croissancech@gmail.com</a>' + " ou de compléter le formulaire ci-dessous (si désiré, indiquer nom, prénom et adrese e-mail pour que nous puissions vous contacter).",
+st.sidebar.markdown("Pour toute demande de contact, proposition d'amélioration ou rapport d'erreur, compléter le formulaire ci-dessous ou écrire un e-mail à " + '<a href="mailto:croissancech@gmail.com">croissancech@gmail.com</a>',
         unsafe_allow_html=True)
 
 
@@ -411,19 +411,19 @@ st.sidebar.markdown("Pour toute demande de contact, proposition d'amélioration 
 import smtplib
 from email.mime.text import MIMEText
 
-# Taking inputs
 email_sender = 'homoncule36@gmail.com'
 email_receiver = 'croissancech@gmail.com'
-subject = st.sidebar.text_input('Objet')
+subject = st.sidebar.text_input('Nom, Prénom')
+subject2 = st.sidebar.text_input("E-mail")
 body = st.sidebar.text_area('Texte')
-password = 'wppg htkw grtv izmz'
+password = 'hsby bmjv sytf nsf'
 
 if st.sidebar.button("Envoyer"):
     try:
         msg = MIMEText(body)
         msg['From'] = email_sender
         msg['To'] = email_receiver
-        msg['Subject'] = subject
+        msg['Subject'] = subject+" ; "+subject2
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
