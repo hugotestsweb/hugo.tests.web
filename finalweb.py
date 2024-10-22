@@ -416,7 +416,7 @@ email_sender = 'homoncule36@gmail.com'
 email_receiver = 'croissancech@gmail.com'
 subject = st.sidebar.text_input('Objet')
 body = st.sidebar.text_area('Texte')
-password = 'hsby bmjv sytf nsf'
+password = 'wppg htkw grtv izmz'
 
 if st.sidebar.button("Envoyer"):
     try:
