@@ -431,7 +431,7 @@ if st.sidebar.button("Envoyer"):
         server.sendmail(email_sender, email_receiver, msg.as_string())
         server.quit()
 
-        st.success('Email sent successfully! 🚀')
+        st.success('Envoi réussi ! 🚀')
     except Exception as e:
         st.error(f"Erreur lors de l’envoi de l’e-mail : {e}")
         
