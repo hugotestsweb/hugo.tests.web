@@ -419,20 +419,23 @@ body = st.sidebar.text_area('Texte')
 password = 'wppg htkw grtv izmz'
 
 if st.sidebar.button("Envoyer"):
-    try:
-        msg = MIMEText(body)
-        msg['From'] = email_sender
-        msg['To'] = email_receiver
-        msg['Subject'] = subject+" ; "+subject2
-
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(email_sender, password)
-        server.sendmail(email_sender, email_receiver, msg.as_string())
-        server.quit()
-
-        st.success('Envoi réussi ! 🚀')
-    except Exception as e:
-        st.error(f"Erreur lors de l’envoi de l’e-mail : {e}")
+    if subject != "" and subject2 != "" and body != "":
+        try:
+            msg = MIMEText(body)
+            msg['From'] = email_sender
+            msg['To'] = email_receiver
+            msg['Subject'] = subject+subject2
+    
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_sender, password)
+            server.sendmail(email_sender, email_receiver, msg.as_string())
+            server.quit()
+    
+            st.success('Email sent successfully! 🚀')
+        except Exception as e:
+            st.error(f"Erreur lors de l’envoi de l’e-mail : {e}")
+    else:
+        st.error(f"Merci de compléter tous les champs.", icon="🚨")
         
 st.sidebar.markdown(":rainbow[Développé par Hugo] :teddy_bear:")
