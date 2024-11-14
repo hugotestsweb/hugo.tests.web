@@ -195,7 +195,7 @@ with tab1:
             y_point_T = y_p_T - y_tick_start_PT
             point_T = (x_point_T * x_tick_interval_PT, y_point_T * y_tick_interval_PT)
 
-            if sex == "garçon":
+            if sex_text == "garçon":
                 image_G_PC = load_image_from_url('https://i.ibb.co/yBsc7rs/GNEO-PC.jpg')
                 image_G_PT = load_image_from_url('https://i.ibb.co/3yh9KRw/GNEO-PT.jpg')
                 result1 = create_scatter_plot_on_image_PT(image_G_PT, plot_center_PT, plot_size_PT, point_P, point_T)
